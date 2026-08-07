@@ -218,3 +218,22 @@ var TxtType = function(el, toRotate, period) {
         css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid #fff}";
         document.body.appendChild(css);
     };
+
+const defaultTitle = document.title;
+const awayTitles = ["¿Un bug te distrajo? 🐛", "Volvé, tu código te espera 👨‍💻"];
+let awayTitleIndex = 0;
+let awayTitleTimer = null;
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        awayTitleIndex = 0;
+        document.title = awayTitles[awayTitleIndex];
+        awayTitleTimer = setInterval(() => {
+            awayTitleIndex = (awayTitleIndex + 1) % awayTitles.length;
+            document.title = awayTitles[awayTitleIndex];
+        }, 1500);
+    } else {
+        clearInterval(awayTitleTimer);
+        document.title = defaultTitle;
+    }
+});

@@ -119,6 +119,7 @@ li a:hover::before {
 
 section {
     min-height: 100vh;
+    min-height: 100svh;
     padding: 8rem 10%;
     width: 100%;
     position: relative;
