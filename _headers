@@ -1,8 +1,11 @@
 # Cabeceras para Cloudflare (Pages / Workers static assets)
 # https://developers.cloudflare.com/pages/configuration/headers/
+#
+# El hash 'sha256-...' de script-src corresponde al <script id="theme-init"> de index.html.
+# Si ese script cambia, hay que recalcular el hash o el tema guardado no se aplica al cargar.
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-wB+cVpn2sIAD39fG7W/pEhGJVrvl+S7ZdBEP22o8OHI=' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff

@@ -257,7 +257,12 @@ var TxtType = function(el, toRotate, period) {
         this.txt = fullTxt.substring(0, this.txt.length + 1);
         }
 
-        this.el.innerHTML = '<span class="wrap">'+this.txt+'</span>';
+        if (!this.wrap) {
+            this.wrap = document.createElement("span");
+            this.wrap.className = "wrap";
+            this.el.replaceChildren(this.wrap);
+        }
+        this.wrap.textContent = this.txt;
 
         var that = this;
         var delta = 200 - Math.random() * 100;
