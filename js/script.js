@@ -1,9 +1,31 @@
 const menuIcon = document.querySelector("#menu-icon");
-const navLinks = document.querySelector(".nav-links")
+const navLinks = document.querySelector(".nav-links");
+const topbar = document.querySelector("#topbar");
 
-menuIcon.onclick = () => {
-    navLinks.classList.toggle("active")
+function setMenu(open) {
+    navLinks.classList.toggle("active", open);
+    topbar.classList.toggle("menu-open", open);
+    menuIcon.setAttribute("aria-expanded", String(open));
+    menuIcon.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    const icon = menuIcon.querySelector("i");
+    icon.classList.toggle("fa-bars", !open);
+    icon.classList.toggle("fa-xmark", open);
 }
+
+menuIcon.addEventListener("click", () => {
+    setMenu(!navLinks.classList.contains("active"));
+});
+
+navLinks.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setMenu(false));
+});
+
+function updateTopbar() {
+    topbar.classList.toggle("scrolled", window.scrollY > 8);
+}
+
+updateTopbar();
+window.addEventListener("scroll", updateTopbar, { passive: true });
 
 const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -63,15 +85,15 @@ document.querySelectorAll(".project-slider").forEach((slider) => {
 
 console.log(
     "%c¡Hola, dev! 👋",
-    "color:#9671DA; font-size:22px; font-weight:bold;"
+    "color:#1F3FE0; font-size:22px; font-weight:bold;"
 );
 console.log(
     "%c¿Revisando el código? Si te gustó lo que viste, hablemos.",
-    "color:#fff; font-size:13px;"
+    "font-size:13px;"
 );
 console.log(
-    "%cmateooliverodev@gmail.com  ·  https://github.com/mateoolivero",
-    "color:#61DAFB; font-size:12px;"
+    "%c@mateodeveloper  ·  mateooliverodev@gmail.com  ·  https://github.com/mateoolivero",
+    "color:#7F97FF; font-size:12px;"
 );
 
 const profilePhoto = document.querySelector("#profile-photo");
@@ -117,48 +139,94 @@ if (profilePhoto && eggBubble) {
     });
 }
 
+/* ---------- WhatsApp: un solo número para todo el sitio ---------- */
+
+const WHATSAPP_NUMBER = "5493533688621";
+
+function whatsappUrl(text) {
+    const base = `https://wa.me/${WHATSAPP_NUMBER}`;
+    return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+}
+
+document.querySelectorAll("[data-wa]").forEach((link) => {
+    link.href = whatsappUrl(link.dataset.wa);
+});
+
 const contactForm = document.querySelector("#contact-form");
 
 if (contactForm) {
-    const submitBtn = contactForm.querySelector('button[type="submit"]');
-    const submitBtnLabel = submitBtn.querySelector(".button-content") || submitBtn;
     const statusEl = contactForm.querySelector(".form-status");
-    const submitBtnDefaultText = submitBtnLabel.textContent;
 
     contactForm.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        submitBtn.disabled = true;
-        submitBtnLabel.textContent = "Enviando...";
-        statusEl.textContent = "";
+        const data = new FormData(contactForm);
+        const name = (data.get("name") || "").trim();
+        const product = (data.get("product") || "").trim();
+        const message = (data.get("message") || "").trim();
 
-        const formData = new FormData(contactForm);
-        const payload = Object.fromEntries(formData);
+        let text = `Hola Mateo! Soy ${name}. Vendo ${product}.`;
+        if (message) text += ` ${message}`;
 
-        fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-            body: JSON.stringify(payload),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                    statusEl.textContent = "¡Gracias! Tu mensaje fue enviado.";
-                    contactForm.reset();
-                } else {
-                    statusEl.textContent = data.message || "Hubo un error, intenta de nuevo.";
-                }
-            })
-            .catch(() => {
-                statusEl.textContent = "Hubo un error, intenta de nuevo.";
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtnLabel.textContent = submitBtnDefaultText;
-            });
+        const url = whatsappUrl(text);
+        const win = window.open(url, "_blank", "noopener");
+        if (!win) window.location.href = url;
+
+        statusEl.textContent = "Listo: se abrió WhatsApp con tu mensaje. Solo te falta tocar enviar.";
+    });
+}
+
+/* ---------- Botón flotante: aparece después de la portada, se oculta en el cierre ---------- */
+
+const waFloat = document.querySelector("#wa-float");
+const heroSection = document.querySelector("#about");
+const contactSection = document.querySelector("#contact");
+
+if (waFloat && heroSection && contactSection) {
+    const visibility = { hero: true, contact: false };
+
+    const floatObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.target === heroSection) visibility.hero = entry.isIntersecting;
+            if (entry.target === contactSection) visibility.contact = entry.isIntersecting;
+        });
+        waFloat.classList.toggle("visible", !visibility.hero && !visibility.contact);
+    }, { threshold: 0.1 });
+
+    floatObserver.observe(heroSection);
+    floatObserver.observe(contactSection);
+}
+
+/* ---------- Modo oscuro ---------- */
+
+const themeToggle = document.querySelector("#theme-toggle");
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    if (themeMeta) themeMeta.setAttribute("content", theme === "dark" ? "#121211" : "#E9E8E3");
+    if (themeToggle) {
+        themeToggle.setAttribute("aria-label", theme === "dark" ? "Activar modo claro" : "Activar modo oscuro");
+    }
+}
+
+applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+        const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        applyTheme(next);
+        try { localStorage.setItem("theme", next); } catch (e) {}
+    });
+}
+
+const systemDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+if (systemDark && systemDark.addEventListener) {
+    systemDark.addEventListener("change", (e) => {
+        let saved = null;
+        try { saved = localStorage.getItem("theme"); } catch (err) {}
+        if (!saved) applyTheme(e.matches ? "dark" : "light");
     });
 }
 
@@ -212,11 +280,6 @@ var TxtType = function(el, toRotate, period) {
               new TxtType(elements[i], JSON.parse(toRotate), period);
             }
         }
-        // INJECT CSS
-        var css = document.createElement("style");
-        css.type = "text/css";
-        css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid #fff}";
-        document.body.appendChild(css);
     };
 
 const defaultTitle = document.title;
