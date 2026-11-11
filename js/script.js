@@ -186,7 +186,7 @@ if (contactForm) {
 /* ---------- Botón flotante: aparece después de la portada, se oculta en el cierre ---------- */
 
 const waFloat = document.querySelector("#wa-float");
-const heroSection = document.querySelector("#about");
+const heroSection = document.querySelector("#about, .page-hero");
 const contactSection = document.querySelector("#contact");
 
 if (waFloat && heroSection && contactSection) {
