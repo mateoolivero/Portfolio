@@ -3,6 +3,62 @@
    Papel 60% · Tinta 30% · Cobalto 10%
    ========================================================================== */
 
+/* ---------- Tipografías propias (subconjunto latino, servidas desde el dominio) ---------- */
+
+@font-face {
+    font-family: "Archivo";
+    font-style: normal;
+    font-weight: 800 900;
+    font-display: swap;
+    src: url("../fonts/archivo.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Instrument Sans";
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url("../fonts/instrument-sans.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Instrument Serif";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/instrument-serif-italic.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Caveat";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/caveat.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---------- Íconos SVG (sprite inline, sin librerías externas) ---------- */
+
+.sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.icon {
+    display: inline-block;
+    width: auto;
+    height: 1em;
+    fill: currentColor;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+}
+
 :root {
     /* Principales */
     --papel: #E9E8E3;
@@ -13,6 +69,7 @@
     --noche: #121211;
     --hueso: #ECEBE5;
     --piedra: #6F6D66;
+    --piedra-texto: #5E5C56;          /* piedra oscurecida a 4,5:1 sobre papel para texto chico */
     --cobalto-claro: #7F97FF;
     --alerta: #D2402F;
     --blanco: #FFFFFF;
@@ -21,7 +78,7 @@
     color-scheme: light;
     --bg: var(--papel);
     --fg: var(--tinta);
-    --muted: var(--piedra);
+    --muted: var(--piedra-texto);
     --accent: var(--cobalto);          /* la palabra que importa */
     --fill: var(--cobalto);            /* botones y cierre en cobalto */
     --on-fill: var(--blanco);
@@ -277,7 +334,7 @@ textarea {
     transform: translateY(0);
 }
 
-.btn i {
+.btn .icon {
     font-size: 0.75em;
 }
 
@@ -637,7 +694,7 @@ textarea {
     white-space: nowrap;
 }
 
-.hero-foot a i {
+.hero-foot a .icon {
     margin-left: 0.3rem;
 }
 
@@ -906,6 +963,7 @@ textarea {
 }
 
 .slider-dot {
+    position: relative;
     width: 7px;
     height: 7px;
     padding: 0;
@@ -913,13 +971,30 @@ textarea {
     border-radius: 50%;
     background-color: var(--fg-30);
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: transform 0.25s ease;
+}
+
+/* El estado activo solo anima transform y opacity (sin recalcular layout) */
+.slider-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--fill);
+    opacity: 0;
+    transition: opacity 0.25s ease;
 }
 
 .slider-dot.active {
-    width: 18px;
-    border-radius: 4px;
-    background: var(--fill);
+    transform: scaleX(2.2);
+}
+
+.slider-dot.active::after {
+    opacity: 1;
+}
+
+.slider-dots {
+    gap: 0.6rem;
 }
 
 .project-tags {
@@ -985,14 +1060,14 @@ textarea {
     min-width: 2.2rem;
 }
 
-.skill i {
+.skill .icon {
     width: 1.6rem;
     font-size: 1.35rem;
     text-align: center;
     transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.skill:hover i {
+.skill:hover .icon {
     color: var(--night-accent);
     transform: translateY(-2px);
 }
@@ -1126,7 +1201,7 @@ textarea {
     position: relative;
 }
 
-.input i {
+.input .icon {
     position: absolute;
     top: 50%;
     left: 1.1rem;
@@ -1168,8 +1243,8 @@ textarea {
     box-shadow: 0 0 0 4px rgba(20, 20, 19, 0.25);
 }
 
-.contact-form .input-field:focus + i,
-.input:focus-within i {
+.contact-form .input-field:focus + .icon,
+.input:focus-within .icon {
     color: var(--fg);
 }
 
@@ -1515,16 +1590,16 @@ textarea {
     color: var(--bg);
 }
 
-.theme-toggle .fa-sun,
-:root[data-theme="dark"] .theme-toggle .fa-moon {
+.theme-toggle .icon-sun,
+:root[data-theme="dark"] .theme-toggle .icon-moon {
     display: none;
 }
 
-:root[data-theme="dark"] .theme-toggle .fa-sun {
+:root[data-theme="dark"] .theme-toggle .icon-sun {
     display: inline-block;
 }
 
-.btn .fa-whatsapp {
+.btn .icon-whatsapp {
     font-size: 1.25em;
 }
 
@@ -1536,7 +1611,7 @@ textarea {
     color: var(--muted);
 }
 
-.cta-note i {
+.cta-note .icon {
     color: var(--accent);
     margin-right: 0.3rem;
 }
@@ -1678,7 +1753,7 @@ textarea {
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s, background-color 0.2s ease;
 }
 
-.wa-float i {
+.wa-float .icon {
     font-size: 1.5rem;
 }
 
@@ -1711,7 +1786,7 @@ textarea {
         display: none;
     }
 
-    .topbar-cta .fa-whatsapp {
+    .topbar-cta .icon-whatsapp {
         font-size: 1.35rem;
     }
 

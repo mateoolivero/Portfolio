@@ -7,9 +7,8 @@ function setMenu(open) {
     topbar.classList.toggle("menu-open", open);
     menuIcon.setAttribute("aria-expanded", String(open));
     menuIcon.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
-    const icon = menuIcon.querySelector("i");
-    icon.classList.toggle("fa-bars", !open);
-    icon.classList.toggle("fa-xmark", open);
+    const icon = menuIcon.querySelector("use");
+    if (icon) icon.setAttribute("href", open ? "#i-xmark" : "#i-bars");
 }
 
 menuIcon.addEventListener("click", () => {
@@ -20,8 +19,16 @@ navLinks.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => setMenu(false));
 });
 
+/* Lee el scroll dentro de requestAnimationFrame para no forzar un recálculo de layout */
+let topbarTicking = false;
+
 function updateTopbar() {
-    topbar.classList.toggle("scrolled", window.scrollY > 8);
+    if (topbarTicking) return;
+    topbarTicking = true;
+    requestAnimationFrame(() => {
+        topbar.classList.toggle("scrolled", window.scrollY > 8);
+        topbarTicking = false;
+    });
 }
 
 updateTopbar();
