@@ -1,3 +1,15 @@
+/* ---------- Temporada de fiestas: del 20 de noviembre al 6 de enero ---------- */
+/* Para previsualizarla fuera de fecha: agregá ?fiestas a la URL. */
+(function () {
+    const now = new Date();
+    const month = now.getMonth();
+    const day = now.getDate();
+    const inSeason = (month === 10 && day >= 20) || month === 11 || (month === 0 && day <= 6);
+    if (inSeason || new URLSearchParams(location.search).has("fiestas")) {
+        document.documentElement.classList.add("season-xmas");
+    }
+})();
+
 const menuIcon = document.querySelector("#menu-icon");
 const navLinks = document.querySelector(".nav-links");
 const topbar = document.querySelector("#topbar");
