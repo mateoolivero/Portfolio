@@ -2371,32 +2371,35 @@ textarea {
     display: block;
 }
 
+/* Gorro sobre la esquina superior izquierda del marco (en % para que escale) */
+.season-xmas .photo-frame {
+    position: relative;
+}
+
+.photo-frame .xmas-hat,
+.photo-frame .xmas-cane {
+    aspect-ratio: auto;
+    object-fit: contain;
+    border-radius: 0;
+    cursor: default;
+}
+
 .xmas-hat {
     position: absolute;
-    top: -2.6rem;
-    right: -1.4rem;
+    left: -14%;
+    top: -24%;
     z-index: 4;
-    width: 6.25rem;
+    width: 48% !important;
     height: auto;
-    transform: rotate(16deg);
-    transform-origin: 30% 80%;
+    transform: rotate(10deg);
     pointer-events: none;
-    overflow: visible;
-    filter: drop-shadow(0 10px 14px rgba(20, 20, 19, 0.25));
+    filter: drop-shadow(0 8px 10px rgba(20, 20, 19, 0.35));
 }
 
-.xmas-hat-cone {
-    fill: var(--xmas-rojo);
-    stroke: var(--tinta);
-    stroke-width: 3;
-    stroke-linejoin: round;
+.season-xmas img.xmas {
+    display: block;
 }
 
-.xmas-hat-trim {
-    fill: var(--blanco);
-    stroke: var(--tinta);
-    stroke-width: 3;
-}
 
 .xmas-sparkle {
     position: absolute;
@@ -2426,11 +2429,6 @@ textarea {
 }
 
 @media (max-width: 600px) {
-    .xmas-hat {
-        width: 4.75rem;
-        top: -2rem;
-        right: -0.9rem;
-    }
 
     .xmas-sparkle--2 {
         right: -1.6rem;
@@ -2444,16 +2442,36 @@ textarea {
     }
 }
 
-/* En pantallas chicas el gorrito ocupa la esquina derecha: la nota pasa a la izquierda */
-@media (max-width: 900px) {
-    .season-xmas .hand-note--hero {
-        left: -0.75rem;
-        right: auto;
-        top: -3.4rem;
-    }
 
-    .season-xmas .hand-note--hero .hand-arrow {
-        margin-left: 2rem;
-        transform: scaleX(-1) rotate(-20deg);
+
+/* Con el gorro en la esquina izquierda, la nota "ese soy yo" pasa a la derecha */
+.season-xmas .hand-note--hero {
+    left: auto;
+    right: -4.5rem;
+    top: -2.6rem;
+}
+
+.season-xmas .hand-note--hero .hand-arrow {
+    margin-left: 0;
+    transform: rotate(-30deg);
+}
+
+@media (max-width: 600px) {
+    .season-xmas .hand-note--hero {
+        right: -0.75rem;
+        top: -3rem;
     }
+}
+
+/* Bastón de caramelo cruzado sobre la esquina inferior derecha del marco */
+.xmas-cane {
+    position: absolute;
+    right: -14%;
+    bottom: -23%;
+    z-index: 4;
+    width: 17% !important;
+    height: auto;
+    transform: rotate(-8deg);
+    pointer-events: none;
+    filter: drop-shadow(0 8px 10px rgba(20, 20, 19, 0.35));
 }
