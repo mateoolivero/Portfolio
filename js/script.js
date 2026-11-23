@@ -10,6 +10,54 @@
     }
 })();
 
+/* ---------- Proyectos: mini páginas que se recorren dentro de la ventana ---------- */
+(function () {
+    const previews = document.querySelectorAll(".site-preview");
+    if (!previews.length) return;
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+
+    previews.forEach((preview) => {
+        const card = preview.closest(".browser");
+        let peeking = false;
+
+        // el aviso "Deslizá para recorrer" se va cuando la persona la usa
+        preview.addEventListener("scroll", () => {
+            if (!peeking && preview.scrollTop > 24) card.classList.add("preview-used");
+        }, { passive: true });
+
+        // táctil: se activa con un toque y se desactiva tocando fuera
+        if (coarse) {
+            const hint = card.querySelector(".preview-hint");
+            if (hint) hint.textContent = "Tocá para recorrer";
+            preview.addEventListener("click", () => card.classList.add("preview-active"));
+            document.addEventListener("click", (e) => {
+                if (!card.contains(e.target)) card.classList.remove("preview-active");
+            });
+        }
+
+        if (reduceMotion || !("IntersectionObserver" in window)) return;
+
+        // la primera vez que aparece, baja un poco sola y vuelve, para mostrar que se puede recorrer
+        const peekObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                peekObserver.disconnect();
+                setTimeout(() => {
+                    if (card.classList.contains("preview-used")) return;
+                    peeking = true;
+                    preview.scrollTo({ top: Math.min(180, preview.scrollHeight * 0.08), behavior: "smooth" });
+                    setTimeout(() => {
+                        preview.scrollTo({ top: 0, behavior: "smooth" });
+                        setTimeout(() => { peeking = false; }, 700);
+                    }, 900);
+                }, 600);
+            });
+        }, { threshold: 0.6 });
+        peekObserver.observe(preview);
+    });
+})();
+
 const menuIcon = document.querySelector("#menu-icon");
 const navLinks = document.querySelector(".nav-links");
 const topbar = document.querySelector("#topbar");

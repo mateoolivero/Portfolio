@@ -2475,3 +2475,127 @@ textarea {
     pointer-events: none;
     filter: drop-shadow(0 8px 10px rgba(20, 20, 19, 0.35));
 }
+
+/* ==========================================================================
+   Proyectos como mini páginas: captura completa que se recorre dentro de la ventana
+   ========================================================================== */
+
+.browser {
+    position: relative;
+}
+
+.browser > .status-pill {
+    top: 3.4rem;
+}
+
+a.browser-url {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+a.browser-url .icon {
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    opacity: 0.6;
+}
+
+a.browser-url:hover {
+    color: var(--accent);
+}
+
+a.browser-url:hover .icon {
+    opacity: 1;
+}
+
+.site-preview {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--surface);
+    scrollbar-width: thin;
+    scrollbar-color: var(--fill) transparent;
+    -webkit-overflow-scrolling: touch;
+}
+
+.site-preview::-webkit-scrollbar {
+    width: 6px;
+}
+
+.site-preview::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.site-preview::-webkit-scrollbar-thumb {
+    background: var(--fill);
+    border: 0;
+    border-radius: 999px;
+}
+
+.site-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.site-preview:focus-visible {
+    outline: 3px solid var(--fill);
+    outline-offset: -3px;
+}
+
+.preview-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 0.9rem;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(20, 20, 19, 0.82);
+    color: var(--hueso);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.preview-hint::before {
+    content: "↕";
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.browser.preview-used .preview-hint {
+    opacity: 0;
+}
+
+/* Pantallas táctiles: la mini página se activa con un toque para no "atrapar" el scroll de la página */
+@media (pointer: coarse) {
+    .site-preview {
+        overflow-y: hidden;
+    }
+
+    .browser.preview-active .site-preview {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    .browser.preview-active .preview-hint {
+        opacity: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .site-preview {
+        aspect-ratio: 1 / 1;
+    }
+}
